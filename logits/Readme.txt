@@ -13,6 +13,7 @@ Resnet110 - ResNet with 110 layers
 densenet40 - DenseNet 40
 resnet_wide32 - Wide ResNet 32
 lenet - LeNet 5
+Mobilenet
 Resnet110SD - Resnet 110 Stochastic Depth
 
 Outputs:

@@ -16,8 +16,6 @@ from sklearn.model_selection import train_test_split
 import pickle
 import string
 import random
-import os
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 rep = 5
 
@@ -35,26 +33,6 @@ log_filepath  = './lenet_dp_da_wd'
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
-
-def build_model(n=1, num_classes = 10):
-    """
-    parameters:
-        n: (int) scaling for model (n times filters in Conv2D and nodes in Dense)
-    """
-    model = Sequential()
-    model.add(Conv2D(n*6, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay), input_shape=(32,32,3)))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(BatchNormalization(epsilon=1.1e-5))
-    model.add(Conv2D(n*16, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay)))
-    model.add(BatchNormalization(epsilon=1.1e-5))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(Flatten())
-    model.add(Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
-    model.add(Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
-    model.add(Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
-    sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    return model
 
 def scheduler(epoch):
     if epoch <= 60:
@@ -95,7 +73,7 @@ if __name__ == '__main__':
 
     for i in range(rep):
         # build network
-        model = build_model(n=N, num_classes = num_classes)
+        model = keras.applications.mobilenet.MobileNet(input_shape=None, alpha=1.0, depth_multiplier=1, dropout=1e-3, include_top=True, weights='imagenet', input_tensor=None, pooling=None, classes=10)
         print(model.summary())
 
         # set callback
