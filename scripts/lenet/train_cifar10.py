@@ -31,7 +31,7 @@ N = 1
 print("N:", N)
 
 
-log_filepath  = './lenet_dp_da_wd'
+log_filepath  = '~/NN_calibration_results/lenet/'
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -117,14 +117,14 @@ if __name__ == '__main__':
                             callbacks=cbks,
                             validation_data=(x_val, y_val))
         # save model
-        model.save(id + '_' + str(i) + '_' + 'lenet_c10.h5')
+        model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
         print("Get test accuracy:")
         loss, accuracy = model.evaluate(x_test, y_test, verbose=0)
         print("Test: accuracy1 = %f  ;  loss1 = %f" % (accuracy, loss))
 
         print("Pickle models history")
-        with open(id + '_' + str(i) + '_' + 'hist_lenet_c10.p', 'wb') as f:
+        with open(log_filepath + id + '_' + str(i) + '_' + 'hist_lenet_c10.p', 'wb') as f:
             pickle.dump(hist.history, f)
 
         K.clear_session()
