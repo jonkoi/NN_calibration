@@ -4,7 +4,6 @@ from keras.engine.topology import Layer
 class RelaxedSoftmax(Layer):
 
     def __init__(self, **kwargs):
-        self.output_dim = output_dim
         super(MyLayer, self).__init__(**kwargs)
 
     def build(self, input_shape):
