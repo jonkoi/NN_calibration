@@ -1,5 +1,6 @@
 from keras import backend as K
 from keras.engine.topology import Layer
+from keras.activations import softmax
 
 class RelaxedSoftmax(Layer):
 
@@ -15,7 +16,8 @@ class RelaxedSoftmax(Layer):
         assert isinstance(x, list)
         logits, temperature = x
         merged_logits = logits * temperature
-        return merged_logits
+        relaxed_softmax_ouputs = softmax(merged_logits)
+        return relaxed_softmax_ouputs
 
     def compute_output_shape(self, input_shape):
         assert isinstance(input_shape, list)
