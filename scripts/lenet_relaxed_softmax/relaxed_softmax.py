@@ -15,7 +15,7 @@ class RelaxedSoftmax(Layer):
     def call(self, x):
         # assert isinstance(x, list)
         logits = x
-        merged_logits = logits * 1
+        merged_logits = logits
         relaxed_softmax_ouputs = softmax(merged_logits)
         return relaxed_softmax_ouputs
 
