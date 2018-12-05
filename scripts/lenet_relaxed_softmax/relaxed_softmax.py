@@ -4,12 +4,12 @@ from keras.engine.topology import Layer
 class RelaxedSoftmax(Layer):
 
     def __init__(self, **kwargs):
-        super(MyLayer, self).__init__(**kwargs)
+        super(RelaxedSoftmax, self).__init__(**kwargs)
 
     def build(self, input_shape):
         assert isinstance(input_shape, list)
         # Create a trainable weight variable for this layer.
-        super(MyLayer, self).build(input_shape)  # Be sure to call this at the end
+        super(RelaxedSoftmax, self).build(input_shape)  # Be sure to call this at the end
 
     def call(self, x):
         assert isinstance(x, list)
