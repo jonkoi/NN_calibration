@@ -52,7 +52,7 @@ def build_model(n=1, num_classes = 10):
     x = Flatten()(x)
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    predictions = Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+    predictions = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     # logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     # temperature = Dense(1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     predictions = RelaxedSoftmax()(predictions)
