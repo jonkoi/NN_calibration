@@ -41,9 +41,8 @@ def build_model(n=1, num_classes = 10):
     parameters:
         n: (int) scaling for model (n times filters in Conv2D and nodes in Dense)
     """
-    inputs = Input(shape=(32,32,3))
-    x = Conv2D(n*6, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(inputs)
-    x = MaxPooling2D((2, 2), strides=(2, 2))(x)
+    inputs = Conv2D(n*6, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay), input_shape=(32,32,3))
+    x = MaxPooling2D((2, 2), strides=(2, 2))(inputs)
     x = BatchNormalization(epsilon=1.1e-5)(x)
     x = Conv2D(n*16, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     x = BatchNormalization(epsilon=1.1e-5)(x)
