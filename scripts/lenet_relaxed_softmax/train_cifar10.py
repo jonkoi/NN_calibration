@@ -55,7 +55,7 @@ def build_model(n=1, num_classes = 10):
     predictions = Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     # logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     # temperature = Dense(1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
-    # predictions = RelaxedSoftmax()(x)
+    predictions = RelaxedSoftmax()(predictions)
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])

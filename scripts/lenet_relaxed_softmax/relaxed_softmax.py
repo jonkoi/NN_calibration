@@ -16,8 +16,8 @@ class RelaxedSoftmax(Layer):
         # assert isinstance(x, list)
         logits = x
         merged_logits = logits
-        relaxed_softmax_ouputs = softmax(merged_logits)
-        return relaxed_softmax_ouputs
+        # relaxed_softmax_ouputs = softmax(merged_logits)
+        return x
 
     def compute_output_shape(self, input_shape):
         # assert isinstance(input_shape, list)
