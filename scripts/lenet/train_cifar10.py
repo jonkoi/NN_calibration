@@ -31,7 +31,7 @@ N = 1
 print("N:", N)
 
 
-log_filepath  = '~/NN_calibration_results/lenet/'
+log_filepath  = '/home/khoi/NN_calibration_results/lenet/'
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

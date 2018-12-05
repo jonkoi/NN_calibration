@@ -18,6 +18,7 @@ import string
 import random
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
+from relaxed_softmax import RelaxedSoftmax
 
 rep = 1
 
@@ -31,7 +32,7 @@ N = 1
 print("N:", N)
 
 
-log_filepath  = '~/NN_calibration_results/lenet_relaxed_softmax/'
+log_filepath  = '/home/khoi/NN_calibration_results/lenet_relaxed_softmax/'
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -51,7 +52,9 @@ def build_model(n=1, num_classes = 10):
     x = Flatten()(x)
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    predictions = Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+    logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
+    temperature = Dense(1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
+    predictions = RelaxedSoftmax()([logits, temperature])
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
