@@ -137,7 +137,7 @@ if __name__ == '__main__':
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
-                            validation_data=(x_val, {"relaxed_softmax_1": y_val, "softmax_1": y_val))
+                            validation_data=(x_val, {"relaxed_softmax_1": y_val, "softmax_1": y_val}))
         # save model
         model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
