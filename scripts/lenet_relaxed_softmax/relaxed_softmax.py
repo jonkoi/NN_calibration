@@ -1,10 +1,11 @@
 from keras import backend as K
 from keras.engine.topology import Layer
-from keras.activations import softmax
+from keras import activations
 
 class RelaxedSoftmax(Layer):
 
     def __init__(self, **kwargs):
+        self.activation = activations.get('softmax')
         super(RelaxedSoftmax, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -14,9 +15,9 @@ class RelaxedSoftmax(Layer):
 
     def call(self, x):
         # assert isinstance(x, list)
-        logits = x
-        merged_logits = logits
-        relaxed_softmax_ouputs = softmax(merged_logits)
+        # logits = x
+        merged_logits = x
+        relaxed_softmax_ouputs = self.activation(merged_logits)
         return relaxed_softmax_ouputs
 
     def compute_output_shape(self, input_shape):
