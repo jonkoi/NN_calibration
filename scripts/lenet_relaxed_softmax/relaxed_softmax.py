@@ -14,9 +14,10 @@ class RelaxedSoftmax(Layer):
 
     def call(self, x):
         logits, temperature = x
+        softmax_ouputs = 0.9 * self.activation(logits)
         merged_logits = logits * temperature
-        relaxed_softmax_ouputs = self.activation(merged_logits)
-        return relaxed_softmax_ouputs
+        relaxed_softmax_ouputs = 0.1 * self.activation(merged_logits)
+        return relaxed_softmax_ouputs + softmax_ouputs
 
     def compute_output_shape(self, input_shape):
         # assert isinstance(input_shape, list)

@@ -6,7 +6,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Softmax
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
@@ -59,26 +59,14 @@ def build_model(n=1, num_classes = 10):
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
-    temperature = Dense(1, activation = None, kernel_initializer=keras.initializers.Ones(), kernel_regularizer=l2(weight_decay))(x)
+    temperature = Dense(1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     predictions = RelaxedSoftmax()([logits, temperature])
-    predictions_raw = Softmax()(logits)
-
-    losses = {
-	   "relaxed_softmax_1": "categorical_crossentropy",
-       "softmax_1": "categorical_crossentropy",
-    }
-
-    lossWeights = {"relaxed_softmax_1": 0.1, "softmax_1": 1.0}
-
-    model = Model(inputs = inputs, outputs=[predictions, predictions_raw])
+    model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
-    model.compile(loss=losses, loss_weights=lossWeights, optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     return model
 
 def scheduler(epoch):
-    return 0.0001
-
-def scheduler_raw(epoch):
     if epoch <= 60:
         return 0.1
     if epoch <= 120:
@@ -132,15 +120,12 @@ if __name__ == '__main__':
 
         datagen.fit(x_train45)
 
-        print('Shit')
-        print(type(y_train))
-
         # start traing
-        hist = model.fit_generator(datagen.flow(x_train45, [y_train45, y_train45] ,batch_size=batch_size, shuffle=True),
+        hist = model.fit_generator(datagen.flow(x_train45, y_train45,batch_size=batch_size, shuffle=True),
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
-                            validation_data=(x_val, [y_val, y_val]))
+                            validation_data=(x_val, y_val))
         # save model
         model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
