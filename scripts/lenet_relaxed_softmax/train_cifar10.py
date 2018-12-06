@@ -61,19 +61,31 @@ def build_model(n=1, num_classes = 10):
     logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     temperature = Dense(1, activation = None, kernel_initializer=keras.initializers.Ones(), kernel_regularizer=l2(weight_decay))(x)
     predictions = RelaxedSoftmax()([logits, temperature])
-    model = Model(inputs = inputs, outputs=predictions)
+    predictions_raw = Softmax()(logits)
+
+    losses = {
+	   "predictions": "categorical_crossentropy",
+       "predictions_raw": "categorical_crossentropy",
+    }
+
+    lossWeights = {"predictions": 0.1, "predictions_raw": 1.0}
+
+    model = Model(inputs = inputs, outputs=[predictions, predictions_raw])
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
-    model.compile(loss=custom_loss, optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss=losses, loss_weights=lossWeights, optimizer=sgd, metrics=['accuracy'])
     return model
 
 def scheduler(epoch):
+    return 0.0001
+
+def scheduler_raw(epoch):
     if epoch <= 60:
-        return 1.
-    if epoch <= 120:
         return 0.1
-    if epoch <= 160:
+    if epoch <= 120:
         return 0.01
-    return 0.001
+    if epoch <= 160:
+        return 0.001
+    return 0.0001
 
 def color_preprocessing(x_train, x_val, x_test):
 
@@ -121,7 +133,7 @@ if __name__ == '__main__':
         datagen.fit(x_train45)
 
         # start traing
-        hist = model.fit_generator(datagen.flow(x_train45, y_train45,batch_size=batch_size, shuffle=True),
+        hist = model.fit_generator(datagen.flow(x_train45, {"predictions": y_train45, "predictions_raw": y_train45},batch_size=batch_size, shuffle=True),
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
