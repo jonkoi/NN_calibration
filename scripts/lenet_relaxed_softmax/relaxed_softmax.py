@@ -22,5 +22,5 @@ class RelaxedSoftmax(Layer):
 
     def compute_output_shape(self, input_shape):
         # assert isinstance(input_shape, list)
-        shape_a, shape_b = input_shape
+        shape_a = input_shape
         return shape_a
