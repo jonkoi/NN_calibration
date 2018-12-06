@@ -22,7 +22,7 @@ from relaxed_softmax import RelaxedSoftmax
 
 rep = 1
 
-batch_size    = 8
+batch_size    = 128
 epochs        = 300
 iterations    = 45000 // batch_size
 num_classes   = 10
@@ -59,7 +59,7 @@ def build_model(n=1, num_classes = 10):
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     temperature = Dense(1, activation = None, kernel_initializer=keras.initializers.Zeros(), kernel_regularizer=l2(weight_decay))(x)
-    K.print_tensor(temperature)
+    K.print_tensor(temperature, message="Temperature is: ")
     predictions = RelaxedSoftmax()([logits, temperature])
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
