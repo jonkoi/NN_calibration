@@ -64,11 +64,11 @@ def build_model(n=1, num_classes = 10):
     predictions_raw = Softmax()(logits)
 
     losses = {
-	   "predictions": "categorical_crossentropy",
-       "predictions_raw": "categorical_crossentropy",
+	   "relaxed_softmax_1": "categorical_crossentropy",
+       "softmax_1": "categorical_crossentropy",
     }
 
-    lossWeights = {"predictions": 0.1, "predictions_raw": 1.0}
+    lossWeights = {"relaxed_softmax_1": 0.1, "softmax_1": 1.0}
 
     model = Model(inputs = inputs, outputs=[predictions, predictions_raw])
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
         datagen.fit(x_train45)
 
         # start traing
-        hist = model.fit_generator(datagen.flow(x_train45, {"predictions": y_train45, "predictions_raw": y_train45},batch_size=batch_size, shuffle=True),
+        hist = model.fit_generator(datagen.flow(x_train45, {"relaxed_softmax_1": y_train45, "softmax_1": y_train45},batch_size=batch_size, shuffle=True),
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
