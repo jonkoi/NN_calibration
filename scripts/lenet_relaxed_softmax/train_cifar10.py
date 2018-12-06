@@ -132,6 +132,9 @@ if __name__ == '__main__':
 
         datagen.fit(x_train45)
 
+        print('Shit')
+        print(type(y_train))
+
         # start traing
         hist = model.fit_generator(datagen.flow(x_train45, [y_train45, y_train45] ,batch_size=batch_size, shuffle=True),
                             steps_per_epoch=iterations,
