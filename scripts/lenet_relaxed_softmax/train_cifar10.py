@@ -37,9 +37,10 @@ log_filepath  = '/home/khoi/NN_calibration_results/lenet_relaxed_softmax/'
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def custom_print(layer):
-    print('Layer: ', layer)
-    return layer
+def custom_loss(y_true, y_pred):
+    y_true = K.print_tensor(y_true, message='y_true = ')
+    y_pred = K.print_tensor(y_pred, message='y_pred = ')
+    return K.categorical_crossentropy(y_true, y_pred)
 
 def build_model(n=1, num_classes = 10):
     """
@@ -59,11 +60,10 @@ def build_model(n=1, num_classes = 10):
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
     temperature = Dense(1, activation = None, kernel_initializer=keras.initializers.Zeros(), kernel_regularizer=l2(weight_decay))(x)
-    K.print_tensor(temperature, message="Temperature is: ")
     predictions = RelaxedSoftmax()([logits, temperature])
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss=custom_loss, optimizer=sgd, metrics=['accuracy'])
     return model
 
 def scheduler(epoch):

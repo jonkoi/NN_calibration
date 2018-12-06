@@ -14,7 +14,6 @@ class RelaxedSoftmax(Layer):
 
     def call(self, x):
         logits, temperature = x
-        K.print_tensor(logits,message="POOP")
         merged_logits = logits * temperature
         relaxed_softmax_ouputs = self.activation(merged_logits)
         return relaxed_softmax_ouputs
