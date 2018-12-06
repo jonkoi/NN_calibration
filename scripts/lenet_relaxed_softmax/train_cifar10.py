@@ -133,11 +133,11 @@ if __name__ == '__main__':
         datagen.fit(x_train45)
 
         # start traing
-        hist = model.fit_generator(datagen.flow(x_train45, {"relaxed_softmax_1": y_train45, "softmax_1": y_train45},batch_size=batch_size, shuffle=True),
+        hist = model.fit_generator(datagen.flow(x_train45, y_train45,batch_size=batch_size, shuffle=True),
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
-                            validation_data=(x_val, {"relaxed_softmax_1": y_val, "softmax_1": y_val}))
+                            validation_data=(x_val, y_val))
         # save model
         model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
