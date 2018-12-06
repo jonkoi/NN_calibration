@@ -6,7 +6,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
@@ -22,7 +22,7 @@ from relaxed_softmax import RelaxedSoftmax
 
 rep = 1
 
-batch_size    = 128
+batch_size    = 8
 epochs        = 300
 iterations    = 45000 // batch_size
 num_classes   = 10
@@ -36,6 +36,10 @@ log_filepath  = '/home/khoi/NN_calibration_results/lenet_relaxed_softmax/'
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+def custom_print(layer):
+    print('Layer: ', layer)
+    return layer
 
 def build_model(n=1, num_classes = 10):
     """
@@ -54,7 +58,8 @@ def build_model(n=1, num_classes = 10):
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
-    temperature = Dense(1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
+    temperature = Dense(1, activation = None, kernel_initializer=keras.initializers.Zeros(), kernel_regularizer=l2(weight_decay))(x)
+    # K.print_tensor(temperature)
     predictions = RelaxedSoftmax()([logits, temperature])
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
