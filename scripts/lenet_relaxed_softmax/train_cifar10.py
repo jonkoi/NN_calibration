@@ -6,7 +6,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Softmax
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
