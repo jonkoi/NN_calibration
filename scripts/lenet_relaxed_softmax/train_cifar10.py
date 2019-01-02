@@ -6,7 +6,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation, Multiply
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
@@ -18,7 +18,7 @@ import string
 import random
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
-from relaxed_softmax import RelaxedSoftmax
+# from relaxed_softmax import RelaxedSoftmax
 
 rep = 1
 
