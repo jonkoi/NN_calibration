@@ -71,8 +71,9 @@ def build_model(n=1, num_classes = 10, addition = False):
     else:
         coef = Dense(2, activation = None, kernel_initializer='he_normal')(x)
         a = Lambda(lambda x : x[:,0])(coef)
-        a = Activation('relu')(a)
+        a = Lambda(lambda x : tf.Print(x, [x], "a = "))(a)
         b = Lambda(lambda x : x[:,1])(coef)
+        b = Lambda(lambda x : tf.Print(x, [x], "b = "))(b)
         soft_logits = Add()([Multiply()([x, a]), b])
     predictions = Activation('softmax')(soft_logits)
     model = Model(inputs = inputs, outputs=predictions)
