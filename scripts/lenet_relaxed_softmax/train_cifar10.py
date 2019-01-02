@@ -20,7 +20,7 @@ import pickle
 import string
 import random
 import os
-from ultility.datalog import logInit
+from utility.datalog import logInit
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # from relaxed_softmax import RelaxedSoftmax
 
