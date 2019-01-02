@@ -148,7 +148,7 @@ if __name__ == '__main__':
         datagen.fit(x_train45)
 
         # start traing
-        hist = model.fit_generator(combined_data_generator(x_train45, y_train45, temp_y_train, batch_size, shuffle=True),
+        hist = model.fit_generator(combined_data_generator(datagen, x_train45, y_train45, temp_y_train, batch_size, shuffle=True),
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
