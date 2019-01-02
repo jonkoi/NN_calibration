@@ -65,7 +65,7 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     if not addition:
-        temperature = Dense(1, activation='relu', kernel_initializer='he_normal')(x)
+        temperature = Dense(1, activation=None, kernel_initializer='he_normal')(x)
         temperature = Lambda(lambda x : tf.Print(x, [x], "temperature = "))(temperature)
         soft_logits = Multiply()([x, temperature])
     else:
