@@ -36,22 +36,36 @@ log_filepath  = '/home/khoi/NN_calibration_results/lenet/'
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def build_model(n=1, num_classes = 10):
+def build_model(n=1, num_classes = 10, sequential = False):
     """
     parameters:
         n: (int) scaling for model (n times filters in Conv2D and nodes in Dense)
     """
-    model = Sequential()
-    model.add(Conv2D(n*6, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay), input_shape=(32,32,3)))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(BatchNormalization(epsilon=1.1e-5))
-    model.add(Conv2D(n*16, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay)))
-    model.add(BatchNormalization(epsilon=1.1e-5))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(Flatten())
-    model.add(Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
-    model.add(Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
-    model.add(Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
+    if sequential:
+        model = Sequential()
+        model.add(Conv2D(n*6, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay), input_shape=(32,32,3)))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(BatchNormalization(epsilon=1.1e-5))
+        model.add(Conv2D(n*16, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay)))
+        model.add(BatchNormalization(epsilon=1.1e-5))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Flatten())
+        model.add(Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
+        model.add(Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
+        model.add(Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) ))
+    else:
+        inputs = Input(shape=(32,32,3))
+        x = Conv2D(n*6, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(inputs)
+        x = MaxPooling2D((2, 2), strides=(2, 2))(x)
+        x = BatchNormalization(epsilon=1.1e-5)(x)
+        x = Conv2D(n*16, (5, 5), padding='valid', activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
+        x = BatchNormalization(epsilon=1.1e-5)(x)
+        x = MaxPooling2D((2, 2), strides=(2, 2))(x)
+        x = Flatten()(x)
+        x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        x = Dense(num_classes, activation = 'softmax', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        model = Model(inputs = inputs, outputs=x)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     return model
