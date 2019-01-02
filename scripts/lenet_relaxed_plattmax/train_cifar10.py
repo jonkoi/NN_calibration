@@ -21,7 +21,7 @@ import string
 import random
 import os
 from datalog import logInit
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # from relaxed_softmax import RelaxedSoftmax
 
 rep = 1
