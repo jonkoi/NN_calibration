@@ -86,6 +86,8 @@ def build_model(n=1, num_classes = 10, addition = False):
     return model
 
 def scheduler(epoch):
+    if epoch <= 50:
+        return 10.
     if epoch <=115:
         return 1.
     if epoch <= 145:
