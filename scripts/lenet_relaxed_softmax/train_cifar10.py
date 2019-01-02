@@ -6,7 +6,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
@@ -60,9 +60,8 @@ def build_model(n=1, num_classes = 10):
     x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     temperature = Lambda(lambda x : x[:,0])(x)
     logits = Lambda(lambda x : x[:,1])(x)
-    # logits = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
-    # temperature = Dense(1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(x)
-    predictions = RelaxedSoftmax()([logits, temperature])
+    soft_logits = Multiply()([logits, temperature])
+    predictions = Activation('softmax')(soft_logits)
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
