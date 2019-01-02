@@ -48,7 +48,7 @@ def custom_loss(y_true, y_pred):
     # y_pred = K.print_tensor(y_pred, message='y_pred = ')
     return K.categorical_crossentropy(y_true, y_pred)
 
-def build_model(n=1, num_classes = 10, addition = False):
+def build_model(n=1, num_classes = 10, addition = True):
     """
     parameters:
         n: (int) scaling for model (n times filters in Conv2D and nodes in Dense)
