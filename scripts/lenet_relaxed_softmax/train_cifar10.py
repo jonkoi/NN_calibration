@@ -62,18 +62,18 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Flatten()(x)
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    # if addition:
-    #     x = Dense(num_classes + 2, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    #     a = Lambda(lambda x : x[:,0])(x)
-    #     b = Lambda(lambda x : x[:,1])(x)
-    #     logits = Lambda(lambda x : x[:,2:])(x)
-    #     soft_logits = Multiply()([logits, a])
-    #     soft_logits = Add()([soft_logits, b])
-    # else:
-    x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    temperature = Lambda(lambda x : x[:,0])(x)
-    logits = Lambda(lambda x : x[:,1:])(x)
-    soft_logits = Multiply()([logits, temperature])
+    if addition:
+        x = Dense(num_classes + 2, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        a = Lambda(lambda x : x[:,0])(x)
+        b = Lambda(lambda x : x[:,1])(x)
+        logits = Lambda(lambda x : x[:,2:])(x)
+        soft_logits = Multiply()([logits, a])
+        soft_logits = Add()([soft_logits, b])
+    else:
+        x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        temperature = Lambda(lambda x : x[:,0])(x)
+        logits = Lambda(lambda x : x[:,1:])(x)
+        soft_logits = Multiply()([logits, temperature])
     predictions = Activation('softmax')(soft_logits)
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
@@ -81,11 +81,19 @@ def build_model(n=1, num_classes = 10, addition = False):
     return model
 
 def scheduler(epoch):
-    if epoch <= 60:
+    if epoch <=15:
+        return 1.
+    if epoch <= 45:
+        return 0.5
+    if epoch <= 90:
         return 0.1
     if epoch <= 120:
         return 0.01
-    if epoch <= 160:
+    if epoch <= 150:
+        return 0.001
+    if epoch <= 180:
+        return 0.0001
+    if epoch <= 210:
         return 0.001
     return 0.0001
 
@@ -122,6 +130,7 @@ if __name__ == '__main__':
         # build network
         model = build_model(n=N, num_classes = num_classes)
         print(model.summary())
+        model.load_weights('/home/khoi/NN_calibration_results/')
 
         # set callback
         change_lr = LearningRateScheduler(scheduler)

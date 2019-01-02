@@ -63,7 +63,7 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    if addition:
+    if not addition:
         temperature = Dense(1, activation='relu', kernel_initializer='he_normal')(x)
         soft_logits = Multiply()([x, temperature])
     else:
@@ -79,11 +79,19 @@ def build_model(n=1, num_classes = 10, addition = False):
     return model
 
 def scheduler(epoch):
-    if epoch <= 60:
+    if epoch <=15:
+        return 1.
+    if epoch <= 45:
+        return 0.5
+    if epoch <= 90:
         return 0.1
     if epoch <= 120:
         return 0.01
-    if epoch <= 160:
+    if epoch <= 150:
+        return 0.001
+    if epoch <= 180:
+        return 0.0001
+    if epoch <= 210:
         return 0.001
     return 0.0001
 
