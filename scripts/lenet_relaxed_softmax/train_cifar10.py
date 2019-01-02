@@ -130,7 +130,7 @@ if __name__ == '__main__':
         # build network
         model = build_model(n=N, num_classes = num_classes)
         print(model.summary())
-        model.load_weights('/home/khoi/NN_calibration_results/')
+        # model.load_weights('/home/khoi/NN_calibration_results/')
 
         # set callback
         change_lr = LearningRateScheduler(scheduler)
