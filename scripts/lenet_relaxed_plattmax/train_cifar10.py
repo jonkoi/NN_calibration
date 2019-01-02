@@ -22,7 +22,7 @@ import random
 import os
 from datalog import logInit
 import tensorflow as tf
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 # from relaxed_softmax import RelaxedSoftmax
 
 rep = 1
