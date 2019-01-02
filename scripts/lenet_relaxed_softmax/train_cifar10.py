@@ -21,7 +21,7 @@ import string
 import random
 import os
 from datalog import logInit
-print tensorflow as tf
+import tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # from relaxed_softmax import RelaxedSoftmax
 
