@@ -15,7 +15,7 @@ class RelaxedSoftmax(Layer):
 
     def call(self, x):
         logits, temperature = x
-        print("Shapo", temperature.shape)
+        print("Shapo", logits.shape)
         merged_logits = Multiply()([logits, K.repeat_elements(temperature, 10, 1)])
         relaxed_softmax_ouputs = self.activation(merged_logits)
         return relaxed_softmax_ouputs
