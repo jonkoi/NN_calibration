@@ -65,7 +65,7 @@ def build_model(n=1, num_classes = 10, addition = False):
     if addition:
         temperature = Dense(1, activation='relu', kernel_initializer='he_normal')(x)
         soft_logits = Multiply()([x, temperature])
-    else
+    else:
         coef = Dense(2, activation = None, kernel_initializer='he_normal')(x)
         a = Lambda(lambda x : x[:,0])(coef)
         a = Activation('relu')(a)
