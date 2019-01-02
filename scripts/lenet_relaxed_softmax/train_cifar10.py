@@ -6,7 +6,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation, Multiply
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation, Multiply, Add
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
@@ -42,7 +42,7 @@ def custom_loss(y_true, y_pred):
     # y_pred = K.print_tensor(y_pred, message='y_pred = ')
     return K.categorical_crossentropy(y_true, y_pred)
 
-def build_model(n=1, num_classes = 10):
+def build_model(n=1, num_classes = 10, addition = False):
     """
     parameters:
         n: (int) scaling for model (n times filters in Conv2D and nodes in Dense)
@@ -57,13 +57,18 @@ def build_model(n=1, num_classes = 10):
     x = Flatten()(x)
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    print(x.shape)
-    temperature = Lambda(lambda x : x[:,0])(x)
-    logits = Lambda(lambda x : x[:,1:])(x) #Fore commit
-    print(logits.shape)
-    soft_logits = Multiply()([logits, temperature])
-    print(soft_logits.shape)
+    if addition:
+        x = Dense(num_classes + 2, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        a = Lambda(lambda x : x[:,0])(x)
+        b = Lambda(lambda x : x[:,1])(x)
+        logits = Lambda(lambda x : x[:,2:])(x)
+        soft_logits = Multiply()([logits, a])
+        soft_logits = Add()([soft_logits, b])
+    else:
+        x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+        temperature = Lambda(lambda x : x[:,0])(x)
+        logits = Lambda(lambda x : x[:,1:])(x)
+        soft_logits = Multiply()([logits, temperature])
     predictions = Activation('softmax')(soft_logits)
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
