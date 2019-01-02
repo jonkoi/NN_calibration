@@ -1,6 +1,7 @@
 from keras import backend as K
 from keras.engine.topology import Layer
 from keras import activations
+from keras.layers import Multiply
 
 class RelaxedSoftmax(Layer):
 
@@ -14,10 +15,9 @@ class RelaxedSoftmax(Layer):
 
     def call(self, x):
         logits, temperature = x
-        softmax_ouputs = 0.9 * self.activation(logits)
-        merged_logits = logits * temperature
-        relaxed_softmax_ouputs = 0.1 * self.activation(merged_logits)
-        return relaxed_softmax_ouputs + softmax_ouputs
+        merged_logits = Multiply()([logits, K.repeat_elements(temperature, 10, 1)])
+        relaxed_softmax_ouputs = self.activation(merged_logits)
+        return relaxed_softmax_ouputs
 
     def compute_output_shape(self, input_shape):
         # assert isinstance(input_shape, list)
