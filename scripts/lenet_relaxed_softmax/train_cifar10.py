@@ -60,7 +60,7 @@ def build_model(n=1, num_classes = 10):
     x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     print(x.shape)
     temperature = Lambda(lambda x : x[:,0])(x)
-    logits = Lambda(lambda x : x[:,1:])(x)
+    logits = Lambda(lambda x : x[:,1:])(x) #Fore commit
     print(logits.shape)
     soft_logits = Multiply()([logits, temperature])
     print(soft_logits.shape)
