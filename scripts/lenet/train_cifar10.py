@@ -37,7 +37,7 @@ log_filepath  = '/home/khoi/NN_calibration_results/lenet/'
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def build_model(n=1, num_classes = 10, sequential = False):
+def build_model(n=1, num_classes = 10, sequential = True):
     """
     parameters:
         n: (int) scaling for model (n times filters in Conv2D and nodes in Dense)
