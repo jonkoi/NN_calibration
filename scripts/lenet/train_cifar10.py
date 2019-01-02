@@ -16,6 +16,7 @@ from sklearn.model_selection import train_test_split
 import pickle
 import string
 import random
+import tensorflow as tf
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
