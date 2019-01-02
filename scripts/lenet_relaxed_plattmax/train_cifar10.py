@@ -1,7 +1,7 @@
 # Training procedure for LeNet-5 CIFAR-10.
 #Code base from https://github.com/BIGBALLON/cifar-10-cnn/blob/master/1_Lecun_Network/LeNet_dp_da_wd_keras.py
 import sys
-sys.path.append("..")
+sys.path.append("../utility/")
 
 import keras
 import numpy as np
@@ -20,7 +20,7 @@ import pickle
 import string
 import random
 import os
-from utility.datalog import logInit
+from datalog import logInit
 os.environ["CUDA_VISIBLE_DEVICES"]="1"
 # from relaxed_softmax import RelaxedSoftmax
 
