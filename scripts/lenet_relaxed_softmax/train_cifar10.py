@@ -28,7 +28,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 rep = 1
 
 batch_size    = 128
-epochs        = 300
+epochs        = 450
 iterations    = 45000 // batch_size
 num_classes   = 10
 weight_decay  = 0.0001
@@ -86,19 +86,19 @@ def build_model(n=1, num_classes = 10, addition = False):
     return model
 
 def scheduler(epoch):
-    if epoch <=15:
+    if epoch <=115:
         return 1.
-    if epoch <= 45:
+    if epoch <= 145:
         return 0.5
-    if epoch <= 90:
+    if epoch <= 190:
         return 0.1
-    if epoch <= 120:
+    if epoch <= 220:
         return 0.01
-    if epoch <= 150:
+    if epoch <= 250:
         return 0.001
-    if epoch <= 180:
+    if epoch <= 280:
         return 0.0001
-    if epoch <= 210:
+    if epoch <= 310:
         return 0.001
     return 0.0001
 
