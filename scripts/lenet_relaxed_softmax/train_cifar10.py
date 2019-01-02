@@ -21,6 +21,7 @@ import string
 import random
 import os
 from datalog import logInit
+print tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # from relaxed_softmax import RelaxedSoftmax
 
@@ -72,8 +73,11 @@ def build_model(n=1, num_classes = 10, addition = False):
     else:
         x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
         temperature = Lambda(lambda x : x[:,0])(x)
+        temperature = Lambda(lambda x: tf.Print(x, [x], "temperature = "))(temperature)
         logits = Lambda(lambda x : x[:,1:])(x)
+        logits = Lambda(lambda x : tf.Print(x, [x], "logits = "))(logits)
         soft_logits = Multiply()([logits, temperature])
+        soft_logits = Lambda(lambda x : tf.Print(x, [x], "soft logits = "))(soft_logits)
     predictions = Activation('softmax')(soft_logits)
     model = Model(inputs = inputs, outputs=predictions)
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
