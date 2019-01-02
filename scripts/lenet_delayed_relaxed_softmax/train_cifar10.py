@@ -64,12 +64,19 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    temperature = Lambda(lambda x : x[:,0])(x)
-    logits = Lambda(lambda x : x[:,1:])(x)
-    predictions = Activation('softmax')(logits)
-    model = Model(inputs = inputs, outputs=predictions)
+    temperature = Lambda(lambda x : x[:,0], name="temperature")(x)
+
+    logits = Lambda(lambda x : x[:,1:], name="logits")(x)
+    soft_logits = Multiply(name="soften")([logits, temperature])
+    predictions = Activation('softmax', name="predictions")(logits)
+    model = Model(inputs = inputs, outputs=[predictions, temperature])
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+    losses = {
+    	"predictions": "categorical_crossentropy",
+    	"temperature": "mean_squared_error",
+    }
+    lossWeights = {"predictions": 1.0, "temperature": 0.5}
+    model.compile(loss=losses, optimizer=sgd, metrics=['accuracy'], loss_weights=lossWeights)
     return model
 
 def scheduler(epoch):
@@ -95,6 +102,13 @@ def color_preprocessing(x_train, x_val, x_test):
 
     return x_train, x_val, x_test
 
+def combined_data_generator(image_generator, X, Y1, Y2, batch_size, shuffle=True):
+    iter = generator.flow(X, Y1, batch_size=batch_size, shuffle=shuffle)
+    while True:
+            Xi, Y1i = iter.next()
+            Yi2 = np.ones((batch_size,1))
+            yield Xi, [Yi1, Yi2]
+
 if __name__ == '__main__':
     logInit(log_filepath + "/log.log")
 
@@ -107,6 +121,10 @@ if __name__ == '__main__':
     y_train45 = keras.utils.to_categorical(y_train45, num_classes)
     y_val = keras.utils.to_categorical(y_val, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
+
+    temp_y_train = np.ones((x_train45.shape[0], 1))
+    temp_y_val = np.ones((y_val.shape[0], 1))
+    temp_y_test = np.ones((y_test.shape[0], 1))
 
     id = id_generator()
 
@@ -130,16 +148,16 @@ if __name__ == '__main__':
         datagen.fit(x_train45)
 
         # start traing
-        hist = model.fit_generator(datagen.flow(x_train45, y_train45,batch_size=batch_size, shuffle=True),
+        hist = model.fit_generator(combined_data_generator(x_train45, y_train45, temp_y_train, batch_size, shuffle=True),
                             steps_per_epoch=iterations,
                             epochs=epochs,
                             callbacks=cbks,
-                            validation_data=(x_val, y_val))
+                            validation_data=(x_val, {"predictions": y_val, "temperature": temp_y_val}))
         # save model
         model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
         print("Get test accuracy:")
-        loss, accuracy = model.evaluate(x_test, y_test, verbose=0)
+        loss, accuracy = model.evaluate(x_test,{"predictions": y_test, "temperature": temp_y_test}, verbose=0)
         print("Test: accuracy1 = %f  ;  loss1 = %f" % (accuracy, loss))
 
         print("Pickle models history")
