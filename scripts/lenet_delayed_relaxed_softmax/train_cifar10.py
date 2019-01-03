@@ -8,7 +8,7 @@ import numpy as np
 from keras import optimizers
 from keras.datasets import cifar10
 from keras.models import Model
-from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation, Multiply, Add
+from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Input, Lambda, Activation, Multiply, Add, Reshape
 from keras.callbacks import LearningRateScheduler, TensorBoard
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
@@ -65,7 +65,7 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     temperature = Lambda(lambda x : x[:,0], name="temperature")(x)
-
+    temperature = Reshape(target_shape=(None,1))(temperature)
     logits = Lambda(lambda x : x[:,1:], name="logits")(x)
     soft_logits = Multiply(name="soften")([logits, temperature])
     predictions = Activation('softmax', name="predictions")(logits)
