@@ -63,11 +63,10 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Flatten()(x)
     x = Dense(n*120, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     x = Dense(n*84, activation = 'relu', kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
-    temperature = Lambda(lambda x : x[:,0], name="temperature")(x)
-    temperature = Reshape(target_shape=(None,1))(temperature)
-    logits = Lambda(lambda x : x[:,1:], name="logits")(x)
-    soft_logits = Multiply(name="soften")([logits, temperature])
+    x = Dense(num_classes + 2, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
+    temperature = Lambda(lambda x : x[:,:2], name="temperature")(x)
+    logits = Lambda(lambda x : x[:,2:], name="logits")(x)
+    # soft_logits = Multiply(name="soften")([logits, temperature])
     predictions = Activation('softmax', name="predictions")(logits)
     model = Model(inputs = inputs, outputs=[predictions, temperature])
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
@@ -106,7 +105,7 @@ def combined_data_generator(image_generator, X, Y1, Y2, batch_size, shuffle=True
     iter = generator.flow(X, Y1, batch_size=batch_size, shuffle=shuffle)
     while True:
             Xi, Y1i = iter.next()
-            Yi2 = np.ones((batch_size,1))
+            Yi2 = np.ones((batch_size,2))
             print("Shapo", Y1i.shape)
             yield Xi, [Yi1, Yi2]
 
