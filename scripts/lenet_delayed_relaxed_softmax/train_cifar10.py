@@ -105,9 +105,9 @@ def combined_data_generator(image_generator, X, Y1, Y2, batch_size, shuffle=True
     iter = image_generator.flow(X, Y1, batch_size=batch_size, shuffle=shuffle)
     while True:
             Xi, Y1i = iter.next()
-            Yi2 = np.ones((batch_size,2))
+            Y2i = np.ones((batch_size,2))
             print("Shapo", Y1i.shape)
-            yield Xi, [Yi1, Yi2]
+            yield Xi, [Y1i, Y2i]
 
 if __name__ == '__main__':
     logInit(log_filepath + "/log.log")
