@@ -1,5 +1,7 @@
 # Training procedure for LeNet-5 CIFAR-10.
 #Code base from https://github.com/BIGBALLON/cifar-10-cnn/blob/master/1_Lecun_Network/LeNet_dp_da_wd_keras.py
+import sys
+sys.path.append("../utility/")
 
 import keras
 import numpy as np
@@ -18,6 +20,7 @@ import string
 import random
 import tensorflow as tf
 import os
+from datalog import logInit
 os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 rep = 5
@@ -99,7 +102,7 @@ def color_preprocessing(x_train, x_val, x_test):
     return x_train, x_val, x_test
 
 if __name__ == '__main__':
-
+    logInit(log_filepath + "/log.log")
     # load data
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
