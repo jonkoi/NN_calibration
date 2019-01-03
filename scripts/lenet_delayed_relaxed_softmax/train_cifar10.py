@@ -38,6 +38,7 @@ print("N:", N)
 
 
 log_filepath  = '/home/khoi/NN_calibration_results/lenet_delayed_relaxed_softmax_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6)) + '/'
+print("*** SAVE LOCATION: " + log_filepath + " ***")
 os.mkdir(log_filepath)
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
@@ -106,8 +107,8 @@ def combined_data_generator(image_generator, X, Y1, Y2, batch_size, shuffle=True
     iter = image_generator.flow(X, Y1, batch_size=batch_size, shuffle=shuffle)
     while True:
             Xi, Y1i = iter.next()
-            Y2i = np.ones((batch_size,1))
-            print("Shapo", Y1i.shape)
+            Y2i = np.ones((Y1i.shape[0],1))
+            # print("Shapo", Y1i.shape)
             yield Xi, [Y1i, Y2i]
 
 if __name__ == '__main__':
