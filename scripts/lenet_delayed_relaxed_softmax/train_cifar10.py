@@ -67,14 +67,14 @@ def build_model(n=1, num_classes = 10, addition = False):
     temperature = Lambda(lambda x : x[:,0:1], name="temperature")(x)
     logits = Lambda(lambda x : x[:,1:], name="logits")(x)
     soft_logits = Multiply(name="soften")([logits, temperature])
-    predictions = Activation('softmax', name="predictions")(logits)
+    predictions = Activation('softmax', name="predictions")(soft_logits)
     model = Model(inputs = inputs, outputs=[predictions, temperature])
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
     losses = {
     	"predictions": "categorical_crossentropy",
     	"temperature": "mean_squared_error",
     }
-    lossWeights = {"predictions": 1.0, "temperature": 0.5}
+    lossWeights = {"predictions": 1.0, "temperature": 1.0}
     model.compile(loss=losses, optimizer=sgd, metrics=['accuracy'], loss_weights=lossWeights)
     return model
 
@@ -137,7 +137,7 @@ if __name__ == '__main__':
         # set callback
         change_lr = LearningRateScheduler(scheduler)
         tensorboard = TensorBoard(log_filepath, histogram_freq=1, write_graph=True, write_images=False)
-        cbks = [change_lr, tensorboard]
+        cbks = [change_lr]
 
         # using real-time data augmentation
         print('Using real-time data augmentation.')
