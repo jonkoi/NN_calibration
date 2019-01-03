@@ -159,8 +159,7 @@ if __name__ == '__main__':
         model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
         print("Get test accuracy:")
-        a = model.evaluate(x_test,{"predictions": y_test, "temperature": temp_y_test}, verbose=0)
-        print(a)
+        loss, predictions_loss, temperature_loss, predictions_accuracy, temperature_accuracy = model.evaluate(x_test,{"predictions": y_test, "temperature": temp_y_test}, verbose=0)
         print("Test: accuracy1 = %f  ;  loss1 = %f" % (predictions_accuracy, predictions_loss))
 
         print("Pickle models history")
