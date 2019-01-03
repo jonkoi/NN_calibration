@@ -76,7 +76,7 @@ def build_model(n=1, num_classes = 10, addition = False):
     	"predictions": "categorical_crossentropy",
     	"temperature": "mean_squared_error",
     }
-    lossWeights = {"predictions": 1.0, "temperature": 1.0}
+    lossWeights = {"predictions": 1.0, "temperature": 0.1}
     model.compile(loss=losses, optimizer=sgd, metrics=['accuracy'], loss_weights=lossWeights)
     return model
 
