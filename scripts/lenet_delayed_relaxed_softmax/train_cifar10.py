@@ -102,7 +102,7 @@ def color_preprocessing(x_train, x_val, x_test):
     return x_train, x_val, x_test
 
 def combined_data_generator(image_generator, X, Y1, Y2, batch_size, shuffle=True):
-    iter = generator.flow(X, Y1, batch_size=batch_size, shuffle=shuffle)
+    iter = image_generator.flow(X, Y1, batch_size=batch_size, shuffle=shuffle)
     while True:
             Xi, Y1i = iter.next()
             Yi2 = np.ones((batch_size,2))
