@@ -66,7 +66,7 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Dense(num_classes + 1, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     temperature = Lambda(lambda x : x[:,0:1], name="temperature")(x)
     logits = Lambda(lambda x : x[:,1:], name="logits")(x)
-    # soft_logits = Multiply(name="soften")([logits, temperature])
+    soft_logits = Multiply(name="soften")([logits, temperature])
     predictions = Activation('softmax', name="predictions")(logits)
     model = Model(inputs = inputs, outputs=[predictions, temperature])
     sgd = optimizers.SGD(lr=.1, momentum=0.9, nesterov=True)
@@ -122,9 +122,9 @@ if __name__ == '__main__':
     y_val = keras.utils.to_categorical(y_val, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
 
-    temp_y_train = np.ones((x_train45.shape[0], 2))
-    temp_y_val = np.ones((y_val.shape[0], 2))
-    temp_y_test = np.ones((y_test.shape[0], 2))
+    temp_y_train = np.ones((x_train45.shape[0], 1))
+    temp_y_val = np.ones((y_val.shape[0], 1))
+    temp_y_test = np.ones((y_test.shape[0], 1))
 
     id = id_generator()
 
