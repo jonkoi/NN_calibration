@@ -28,7 +28,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 rep = 1
 
 batch_size    = 128
-epochs        = 1
+epochs        = 300
 iterations    = 45000 // batch_size
 num_classes   = 10
 weight_decay  = 0.0001
