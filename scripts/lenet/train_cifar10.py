@@ -34,6 +34,7 @@ print("N:", N)
 
 log_filepath  = '/home/khoi/NN_calibration_results/lenet_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6)) + '/'
 print("*** SAVE LOCATION: " + log_filepath + " ***")
+os.mkdir(log_filepath)
 
 def id_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
