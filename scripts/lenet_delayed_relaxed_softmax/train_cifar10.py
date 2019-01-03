@@ -28,7 +28,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 rep = 1
 
 batch_size    = 128
-epochs        = 300
+epochs        = 1
 iterations    = 45000 // batch_size
 num_classes   = 10
 weight_decay  = 0.0001
@@ -159,8 +159,8 @@ if __name__ == '__main__':
         model.save(log_filepath + id + '_' + str(i) + '_' + 'lenet_c10.h5')
 
         print("Get test accuracy:")
-        loss, accuracy = model.evaluate(x_test,{"predictions": y_test, "temperature": temp_y_test}, verbose=0)
-        print("Test: accuracy1 = %f  ;  loss1 = %f" % (accuracy, loss))
+        predictions_loss, temperature_loss, predictions_accuracy, temperature_accuracy = model.evaluate(x_test,{"predictions": y_test, "temperature": temp_y_test}, verbose=0)
+        print("Test: accuracy1 = %f  ;  loss1 = %f" % (predictions_accuracy, predictions_loss))
 
         print("Pickle models history")
         with open(log_filepath + id + '_' + str(i) + '_' + 'hist_lenet_c10.p', 'wb') as f:
