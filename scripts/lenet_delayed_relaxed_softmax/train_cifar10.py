@@ -122,9 +122,9 @@ if __name__ == '__main__':
     y_val = keras.utils.to_categorical(y_val, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
 
-    temp_y_train = np.ones((x_train45.shape[0], 1))
-    temp_y_val = np.ones((y_val.shape[0], 1))
-    temp_y_test = np.ones((y_test.shape[0], 1))
+    temp_y_train = np.ones((x_train45.shape[0], 2))
+    temp_y_val = np.ones((y_val.shape[0], 2))
+    temp_y_test = np.ones((y_test.shape[0], 2))
 
     id = id_generator()
 
