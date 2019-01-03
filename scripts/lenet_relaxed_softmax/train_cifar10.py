@@ -66,9 +66,9 @@ def build_model(n=1, num_classes = 10, addition = False):
     if addition:
         x = Dense(num_classes + 2, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
         a = Lambda(lambda x : x[:,0:1])(x)
-        a = Lambda(lambda x: tf.Print(x, [x], "a = "))(a)
+        # a = Lambda(lambda x: tf.Print(x, [x], "a = "))(a)
         b = Lambda(lambda x : x[:,1:2])(x)
-        b = Lambda(lambda x: tf.Print(x, [x], "b = "))(b)
+        # b = Lambda(lambda x: tf.Print(x, [x], "b = "))(b)
         logits = Lambda(lambda x : x[:,2:])(x)
         soft_logits = Multiply()([logits, a])
         soft_logits = Add()([soft_logits, b])
