@@ -107,6 +107,7 @@ def combined_data_generator(image_generator, X, Y1, Y2, batch_size, shuffle=True
     while True:
             Xi, Y1i = iter.next()
             Yi2 = np.ones((batch_size,1))
+            print("Shapo", Y1i.shape)
             yield Xi, [Yi1, Yi2]
 
 if __name__ == '__main__':
