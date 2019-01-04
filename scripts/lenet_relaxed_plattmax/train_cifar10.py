@@ -37,7 +37,7 @@ N = 1
 print("N:", N)
 
 
-log_filepath  = '/home/khoi/NN_calibration_results/lenet_relaxed_softmax_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6)) + '/'
+log_filepath  = '/home/khoi/NN_calibration_results/lenet_relaxed_plattmax_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6)) + '/'
 print("*** SAVE LOCATION: " + log_filepath + " ***")
 os.mkdir(log_filepath)
 
@@ -67,14 +67,14 @@ def build_model(n=1, num_classes = 10, addition = False):
     x = Dense(num_classes, activation = None, kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay) )(x)
     if not addition:
         temperature = Dense(1, activation=None, kernel_initializer='he_normal')(x)
-        temperature = Lambda(lambda x : tf.Print(x, [x], "temperature = "))(temperature)
+        # temperature = Lambda(lambda x : tf.Print(x, [x], "temperature = "))(temperature)
         soft_logits = Multiply()([x, temperature])
     else:
         coef = Dense(2, activation = None, kernel_initializer='he_normal')(x)
         a = Lambda(lambda x : x[:,0])(coef)
-        a = Lambda(lambda x : tf.Print(x, [x], "a = "))(a)
+        # a = Lambda(lambda x : tf.Print(x, [x], "a = "))(a)
         b = Lambda(lambda x : x[:,1])(coef)
-        b = Lambda(lambda x : tf.Print(x, [x], "b = "))(b)
+        # b = Lambda(lambda x : tf.Print(x, [x], "b = "))(b)
         soft_logits = Add()([Multiply()([x, a]), b])
     predictions = Activation('softmax')(soft_logits)
     model = Model(inputs = inputs, outputs=predictions)
