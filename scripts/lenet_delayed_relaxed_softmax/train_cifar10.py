@@ -25,7 +25,7 @@ import tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # from relaxed_softmax import RelaxedSoftmax
 
-rep = 1
+rep = 5
 
 batch_size    = 128
 epochs        = 300
@@ -128,10 +128,11 @@ if __name__ == '__main__':
     temp_y_val = np.ones((y_val.shape[0], 1))
     temp_y_test = np.ones((y_test.shape[0], 1))
 
-    id = id_generator()
+
 
     for i in range(rep):
         # build network
+        id = id_generator()
         model = build_model(n=N, num_classes = num_classes)
         print(model.summary())
         # model.load_weights('/home/khoi/NN_calibration_results/')

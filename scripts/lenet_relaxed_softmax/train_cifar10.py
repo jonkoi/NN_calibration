@@ -25,7 +25,7 @@ import tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # from relaxed_softmax import RelaxedSoftmax
 
-rep = 1
+rep = 5
 
 batch_size    = 128
 epochs        = 300
@@ -125,9 +125,10 @@ if __name__ == '__main__':
     y_val = keras.utils.to_categorical(y_val, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
 
-    id = id_generator()
+
 
     for i in range(rep):
+        id = id_generator()
         # build network
         model = build_model(n=N, num_classes = num_classes)
         print(model.summary())
