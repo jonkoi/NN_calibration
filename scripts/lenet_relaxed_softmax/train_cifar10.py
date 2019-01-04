@@ -78,7 +78,7 @@ def build_model(n=1, num_classes = 10, addition = False):
         temperature = Lambda(lambda x : x[:,0:1])(x)
         # temperature = Lambda(lambda x : x*x)(temperature)
         temperature = Activation("sigmoid")(temperature)
-        temperature = Lambda(lambda x: tf.Print(x, [x], "temperature = "))(temperature)
+        # temperature = Lambda(lambda x: tf.Print(x, [x], "temperature = "))(temperature)
         logits = Lambda(lambda x : x[:,1:])(x)
         # logits = Lambda(lambda x : tf.Print(x, [x], "logits = "))(logits)
         soft_logits = Multiply()([logits, temperature])
